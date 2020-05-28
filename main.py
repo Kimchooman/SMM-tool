@@ -6,7 +6,9 @@ import os
 
 cmd = input("What would you like to do?  \n \'unfollow\' or \'follow\' or \'update\' \n --> ")
 
-prospect_file_path =  "prospects.json"
+old_prospects_path = "old_prospects.csv"
+current_prospect_path = "current_prospects.csv"
+future_prospect_path = "future_prospects.csv"
 
 unfollow_period = 3 #days
 action_batch_size = 100
@@ -18,33 +20,16 @@ def remove_known_prospects(file_name, name_list):
 
 	del_marks = []
 
-	with open(file_name) as json_file:
-		data = json.load(csv_file)
+	with open(file_name, "r") as jsondata:
+		jsonreader = json.load(jsondata)
 	
 		for prospect in name_list:
-			
-			try:
-				try:
-					try:
-						data["current"][prospect]
-						del_marks.append(prospect)
 
-					except:
-						data["future"][prospect]
-						del_marks.append(prospect)
-			
-				except:
-					data["past"][prospect]
-					del_marks.append(prospect)
-			
-			except:
-				pass
-	
-	for mark in del_marks:
-		
-		data["current"].pop(mark, None)
-		data["past"].pop(mark, None)
-		data["future"].pop(mark, None)
+			for person in list(jsonreader["current"].keys()):
+				if prospect == person["user"]
+
+	for person in del_marks:
+		name_list.remove(person)
 
 def save_over_file(file_name, new_data):
 
@@ -140,7 +125,9 @@ elif cmd == "update":
 	remove_known_prospects(old_prospects_path, new_prospects)
 	remove_known_prospects(current_prospect_path, new_prospects)
 	remove_known_prospects(future_prospect_path, new_prospects)
-	
+
+	print(new_prospects)
+	final_ar = []
 
 	for prospect in new_prospects:
 		
