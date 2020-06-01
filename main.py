@@ -1,8 +1,8 @@
 import json
 import instaloader
 from datetime import datetime
+from time import sleep
 import subprocess
-import random
 
 def copy2clip(txt):
     cmd='echo '+txt.strip()+'|clip'
@@ -27,7 +27,7 @@ prospect_path = "prospects.json"
 unfollow_period = 3 #days
 action_batch_size = 100
 
-prospect_source_accounts = ["medicalertca "]#, "dothealthhq"]
+prospect_source_accounts = ["medicalertca", "dothealthhq"]
 
 if  cmd == "unfollow":
 	
@@ -87,8 +87,6 @@ elif cmd == "follow":
 	
 elif cmd == "RESET":
 
-	num = random.randint(1,100)
-	
 	with open(prospect_path, "w") as json_file:
 
 		save = {"current": {},"past": {},"future": {}}
@@ -107,7 +105,11 @@ elif cmd == "update":
 		profile = instaloader.Profile.from_username(L.context, account)
 		followers = profile.get_followers()
 		
+		print(followers)
+
 		for follower in followers:
+
+			print(follower)
 			for prospect in new_prospects:
 
 				if prospect == follower:
@@ -123,26 +125,28 @@ elif cmd == "update":
 		#data = json.loads(data)
 
 		for prospect in new_prospects:
-
+			
+			name = prospect.username
+			print(f"checking {name}")
 			try:
 				try:
 					try:
-						data["current"][prospect.username]
+						data["current"][name]
 						new_prospects.remove(prospect)
 
 					except:
-						data["future"][prospect.username]
+						data["future"][name]
 						new_prospects.remove(prospect)
 				
 				except:
-					data["past"][prospect.username]
+					data["past"][name]
 					new_prospects.remove(prospect)
 
 			except:
 
-				data["future"][prospect.username] = {}
-				data["future"][prospect.username]["know_since"] = [datetime.today().month, datetime.today().day, datetime.today().year]
-				data["future"][prospect.username]["is_business"] = prospect.is_business_account
+				data["future"][name] = {}
+				data["future"][name]["know_since"] = [datetime.today().month, datetime.today().day, datetime.today().year]
+				#data["future"][prospect.username]["is_business"] = prospect.is_business_account
 
 
 	with open(prospect_path, "w") as jsonfile:
