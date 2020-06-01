@@ -27,36 +27,34 @@ prospect_path = "prospects.json"
 unfollow_period = 3 #days
 action_batch_size = 100
 
-prospect_source_accounts = ["immanueljones8"]#"medicalertca", "dothealthhq"]
+prospect_source_accounts = ["medicalertca "]#, "dothealthhq"]
 
 if  cmd == "unfollow":
 	
 	with open(prospect_path, "r") as json_file:
 		data = json.load(json_file)
 
-		current_people = data["current"].keys()
+	current_people = list(data["current"].keys())
 
-		count = 0
-		for target in current_people:
+	count = 0
+	for target in current_people:
 
-			copy2clip(target)
+		copy2clip(target)
 
-			input(f"unfollow -->  {target}  <--")
+		input(f"unfollow -->  {target}  <--")
 
-			temp_holder = data["current"][target]
-			data["current"].pop(target)
-			data["past"][target] = temp_holder
+		temp_holder = data["current"][target]
+		data["current"].pop(target)
+		data["past"][target] = temp_holder
 
-			with open(prospect_path, "w") as json_file:
+		with open(prospect_path, "w") as json_file:
+			json.dump(data, json_file)
 
-				json.dump(data, json_file)
-			if count >= action_batch_size:
-				break
-			
-			count += 1
+		if count >= action_batch_size:
+			break
 		
-
-
+		count += 1
+	
 elif cmd == "follow":
 
 	with open(prospect_path, "r") as json_file:
@@ -90,13 +88,12 @@ elif cmd == "follow":
 elif cmd == "RESET":
 
 	num = random.randint(1,100)
-		
-	if input(f"Type: {num}  -->") == num:
-		with open(prospect_path, "w") as json_file:
+	
+	with open(prospect_path, "w") as json_file:
 
-			save = {"current": {},"past": {},"future": {}}
+		save = {"current": {},"past": {},"future": {}}
 
-			json.dump(save, json_file)
+		json.dump(save, json_file)
 
 elif cmd == "update":
 
@@ -108,8 +105,9 @@ elif cmd == "update":
 	for account in prospect_source_accounts:
 		
 		profile = instaloader.Profile.from_username(L.context, account)
+		followers = profile.get_followers()
 		
-		for follower in profile.get_followers():
+		for follower in followers:
 			for prospect in new_prospects:
 
 				if prospect == follower:
